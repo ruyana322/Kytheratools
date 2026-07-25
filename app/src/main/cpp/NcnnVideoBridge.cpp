@@ -234,7 +234,7 @@ Java_com_d4nzxml_kythera_service_NcnnVideoBridge_processFrameToBuffer(
     jbyte* dstBuf = env->GetByteArrayElements(outBuffer, nullptr);
     if (dstBuf != nullptr) {
         // Output raw RGB24 directly to target buffer
-        out.to_pixels((unsigned char*)dstBuf, ncnn::Mat::PIXEL_RGB2RGB);
+        out.to_pixels((unsigned char*)dstBuf, ncnn::Mat::PIXEL_RGB);
         env->ReleaseByteArrayElements(outBuffer, dstBuf, 0);
         return JNI_TRUE;
     }
