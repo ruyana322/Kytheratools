@@ -204,7 +204,7 @@ fun VideoEnhanceScreen() {
                 val fps = openedMeta.fps
                 val safUrl = FFmpegKitConfig.getSafParameterForRead(context, uri)
 
-                // 1. Buat FFmpeg Named Pipe (FIFO Pipe di RAM, Zero Disk Write)
+                                // 1. Buat FFmpeg Named Pipe (FIFO Pipe di RAM, Zero Disk Write)
                 val pipePath = FFmpegKitConfig.registerNewFFmpegPipe(context)
                 
                 // 2. Jalankan FFmpeg async process membaca dari Named Pipe dengan akselerasi Hardware MediaCodec
@@ -212,6 +212,9 @@ fun VideoEnhanceScreen() {
                         "-i \"$pipePath\" -i \"$safUrl\" -map 0:v -map 1:a? " +
                         "-c:v h264_mediacodec -b:v 12M -pix_fmt yuv420p " +
                         "-c:a aac -b:a 192k -movflags +faststart -shortest \"${outFile.absolutePath}\""
+
+                val ffmpegSession = FFmpegKit.executeAsync(ffmpegCmd) {}
+
 
                 val ffmpegSession = FFmpegKit.executeAsync(ffmpegCmd)
 
@@ -263,7 +266,8 @@ fun VideoEnhanceScreen() {
                 }
 
                 if (isCancelled) {
-                    FFmpegKit.cancel(ffmpegSession.sessionId)
+                    FFmpegKit.cancel(ffmpegSession.sessionState.sessionId)
+
                     statusMsg = "Dibatalkan"; isProcessing = false; return@launch
                 }
 
