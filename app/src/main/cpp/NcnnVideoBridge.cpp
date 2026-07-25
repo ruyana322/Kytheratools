@@ -65,7 +65,7 @@ static bool processMatTiled(ncnn::Net* net, const ncnn::Mat& in, ncnn::Mat& out,
 
             // Cut padded tile from input
             ncnn::Mat tile_in;
-            ncnn::copy_cut_tile(in, tile_in, px0, py0, px1 - px0, py1 - py0);
+            ncnn::copy_cut_border(in, tile_in, px0, py0, px1 - px0, py1 - py0);
 
             // Execute NCNN Extractor for tile
             ncnn::Extractor ex = net->create_extractor();
@@ -120,7 +120,7 @@ Java_com_d4nzxml_kythera_service_NcnnVideoBridge_initEngine(JNIEnv *env, jclass 
     g_net->opt.use_fp16_storage = true;
     g_net->opt.use_fp16_arithmetic = true;
     g_net->opt.use_packing_layout = true;
-    g_net->opt.use_shader_pack8 = true;
+    // g_net->opt.use_shader_pack8 = true;
     g_net->opt.num_threads = 4;
 
     AAssetManager* mgr = AAssetManager_fromJava(env, assetManager);
@@ -193,7 +193,7 @@ Java_com_d4nzxml_kythera_service_NcnnVideoBridge_processFrame(JNIEnv *env, jclas
 
     void* resultPixels = nullptr;
     if (AndroidBitmap_lockPixels(env, resultBitmap, &resultPixels) >= 0) {
-        out.to_pixels((unsigned char*)resultPixels, ncnn::Mat::PIXEL_RGB2RGBA);
+        out.to_pixels((unsigned char*)resultPixels, ncnn::Mat::PIXEL_RGB);
         AndroidBitmap_unlockPixels(env, resultBitmap);
     }
 
